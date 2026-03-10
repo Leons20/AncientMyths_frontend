@@ -1,1 +1,1 @@
-# AncientMyths_frontend
+Frontend repozitorij projekta za kolegij Web aplikacije
