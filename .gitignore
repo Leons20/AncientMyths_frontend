@@ -1,0 +1,5 @@
+.vscode
+node_modules
+.prettierrc.json
+jsconfig.json
+tailwind.config.js
