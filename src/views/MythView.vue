@@ -36,7 +36,9 @@ const selectedColors = computed(() => colors[mythologyKey.value.toLowerCase()] |
 const isDefaultMyth = computed(() => currentMyth.value?.isDefault === true);
 
 const isFavorite = computed(() => {
-    return userStore.favorites.some((f) => f._id === currentMyth.value?._id);
+    if (!currentMyth.value) return false;
+
+    return userStore.favorites.some((f) => f._id.toString() === currentMyth.value._id.toString());
 });
 
 watch(
@@ -110,6 +112,25 @@ const rate = async (value) => {
     selectedRating.value = value;
 
     await mythStore.rateMyth(currentMyth.value._id, value);
+
+    const userId = userStore.getCurrentUserId();
+
+    if (!currentMyth.value.ratings) {
+        currentMyth.value.ratings = [];
+    }
+
+    const existing = currentMyth.value.ratings.find(
+        (r) => r.userId.toString() === userId.toString(),
+    );
+
+    if (existing) {
+        existing.value = value;
+    } else {
+        currentMyth.value.ratings.push({
+            userId: userId,
+            value: value,
+        });
+    }
 };
 
 const toggleFavorite = async () => {
@@ -117,26 +138,17 @@ const toggleFavorite = async () => {
 
     if (isFavorite.value) {
         await userStore.removeFavorite(currentMyth.value._id);
+        await userStore.fetchFavorites();
     } else {
         await userStore.addFavorite(currentMyth.value._id);
+        await userStore.fetchFavorites();
     }
 };
 
 onMounted(async () => {
-    if (!userStore.favorites.length) {
+    if (userStore.isLoggedIn) {
         await userStore.fetchFavorites();
     }
-
-    watch(
-        () => mythStore.selectedMyth,
-        (myth) => {
-            if (myth && myth.userRating) {
-                selectedRating.value = myth.userRating;
-            } else {
-                selectedRating.value = 0;
-            }
-        },
-    );
 });
 </script>
 
