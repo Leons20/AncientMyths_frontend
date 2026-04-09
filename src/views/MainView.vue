@@ -68,7 +68,7 @@ const goToSettings = () => {
 };
 
 const goToMyth = (myth) => {
-    router.push(`/myths/${myth.mythology.toLowerCase()}/${encodeURIComponent(myth.title)}`);
+    router.push(`/myths/${myth.mythology.toLowerCase()}/${myth._id}`);
 };
 
 const handleClickOutside = (event) => {

@@ -17,8 +17,6 @@ const mythologyKey = computed(() => {
     return route.params.mythology.charAt(0).toUpperCase() + route.params.mythology.slice(1);
 });
 
-const mythsArray = computed(() => mythStore.myths);
-
 const currentMyth = ref(null);
 const selectedRating = ref(0);
 
@@ -44,22 +42,16 @@ const isFavorite = computed(() => {
 watch(
     () => route.params,
     async () => {
-        await mythStore.fetchMyths({
-            mythology: mythologyKey.value,
-        });
+        const mythId = route.params.title;
 
-        if (!mythsArray.value.length) {
+        if (!mythId) {
             currentMyth.value = null;
             return;
         }
 
-        const decodedTitle = route.params.title
-            ? decodeURIComponent(route.params.title).trim().toLowerCase()
-            : null;
+        await mythStore.fetchMyth(mythId);
 
-        currentMyth.value = decodedTitle
-            ? mythsArray.value.find((m) => m.title.trim().toLowerCase() === decodedTitle)
-            : mythsArray.value[0];
+        currentMyth.value = mythStore.selectedMyth;
 
         if (currentMyth.value) {
             await reviewStore.fetchReviews(currentMyth.value._id);
@@ -71,6 +63,8 @@ watch(
             );
 
             selectedRating.value = userRating ? userRating.value : 0;
+        } else {
+            reviewStore.reviews = [];
         }
     },
     { immediate: true },
