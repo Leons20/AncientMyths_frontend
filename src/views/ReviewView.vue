@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useUserStore } from "@/stores/userStore.js";
 import { useMythStore } from "@/stores/mythStore.js";
@@ -63,6 +63,12 @@ onMounted(async () => {
     }
 
     await mythStore.fetchMyth(mythId);
+
+    if (!mythStore.selectedMyth) {
+        router.push("/main");
+        return;
+    }
+
     currentMyth.value = mythStore.selectedMyth;
 });
 </script>
