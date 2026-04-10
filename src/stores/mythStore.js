@@ -57,8 +57,6 @@ export const useMythStore = defineStore("myths", () => {
 
             const createdMyth = res.data.myth;
 
-            await fetchMyths();
-
             return createdMyth;
         } catch (err) {
             console.error("Error adding myth:", err);
