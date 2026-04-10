@@ -79,9 +79,10 @@ const handleClickOutside = (event) => {
     }
 };
 
-onMounted(async () => {
+onMounted(() => {
     if (!userStore.isLoggedIn) {
         router.push("/");
+        return;
     }
 
     document.addEventListener("click", handleClickOutside);

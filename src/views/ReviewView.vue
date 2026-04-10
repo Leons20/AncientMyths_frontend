@@ -2,20 +2,25 @@
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useUserStore } from "@/stores/userStore.js";
+import { useMythStore } from "@/stores/mythStore.js";
 import { useReviewStore } from "@/stores/reviewStore.js";
 
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
+const mythStore = useMythStore();
 const reviewStore = useReviewStore();
 
+const currentMyth = ref(null);
 const reviewText = ref("");
 
-const mythId = route.query.mythId;
-const mythology = (route.query.mythology || "egyptian").toLowerCase();
-const mythTitle = route.query.myth || "Myth";
+const mythId = route.params.id;
 
-const mythologyTitle = mythology.charAt(0).toUpperCase() + mythology.slice(1);
+const mythology = computed(() => currentMyth.value?.mythology?.toLowerCase() || "egyptian");
+
+const mythologyTitle = computed(
+    () => mythology.value.charAt(0).toUpperCase() + mythology.value.slice(1),
+);
 
 const colors = {
     egyptian: { bg: "bg-orange-600", border: "border-orange-700", hover: "hover:bg-orange-700" },
@@ -26,9 +31,13 @@ const colors = {
     mayan: { bg: "bg-green-600", border: "border-green-700", hover: "hover:bg-green-700" },
 };
 
-const selectedColors = colors[mythology] || colors.egyptian;
+const selectedColors = computed(() => colors[mythology.value] || colors.egyptian);
 
-const goBack = () => router.push(`/myths/${mythology}/${encodeURIComponent(mythTitle)}`);
+const goBackToMyth = () => {
+    if (!currentMyth.value) return;
+
+    router.push(`/myths/${currentMyth.value.mythology.toLowerCase()}/${currentMyth.value._id}`);
+};
 
 const postReview = async () => {
     if (!reviewText.value.trim()) return;
@@ -40,17 +49,21 @@ const postReview = async () => {
         });
 
         reviewText.value = "";
-        goBack();
+        goBackToMyth();
     } catch (error) {
         console.error("Failed to post review:", error);
         alert("Failed to post review. Please try again.");
     }
 };
 
-onMounted(() => {
-    if (!userStore.isLoggedIn) {
+onMounted(async () => {
+    if (!userStore.isLoggedIn || !mythId) {
         router.push("/");
+        return;
     }
+
+    await mythStore.fetchMyth(mythId);
+    currentMyth.value = mythStore.selectedMyth;
 });
 </script>
 
@@ -59,7 +72,7 @@ onMounted(() => {
     <div class="min-h-screen bg-white flex flex-col">
         <div :class="['h-24 text-white px-6 py-4 flex justify-between items-center border-b-4', selectedColors.bg, selectedColors.border]">
             <h1 class="text-2xl font-bold">{{ mythologyTitle }} myths</h1>
-            <button @click="goBack" class="flex items-center space-x-2 font-semibold">
+            <button @click="goBackToMyth" class="flex items-center space-x-2 font-semibold">
                 <img src="/icons/back.svg" class="w-10 h-10 filter invert" />
                 <span class="text-xl">Back to Myth</span>
             </button>
@@ -80,7 +93,7 @@ onMounted(() => {
             </div>
 
             <div class="text-center mt-20">
-                <h2 class="text-3xl font-bold mb-8">{{ mythTitle }}</h2>
+                <h2 class="text-3xl font-bold mb-8">{{ currentMyth?.title }}</h2>
             </div>
 
             <div class="flex-1 flex flex-col justify-center items-center px-6 text-center">

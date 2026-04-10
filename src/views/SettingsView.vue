@@ -27,6 +27,7 @@ const goBackToMain = () => {
 onMounted(() => {
     if (!userStore.isLoggedIn) {
         router.push("/");
+        return;
     }
 });
 </script>

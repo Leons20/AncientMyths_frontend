@@ -42,7 +42,7 @@ const isFavorite = computed(() => {
 watch(
     () => route.params,
     async () => {
-        const mythId = route.params.title;
+        const mythId = route.params.id;
 
         if (!mythId) {
             currentMyth.value = null;
@@ -77,14 +77,7 @@ const goBackToMain = () => {
 const goToReview = () => {
     if (!currentMyth.value) return;
 
-    router.push({
-        path: "/review",
-        query: {
-            mythId: currentMyth.value._id,
-            mythology: mythologyKey.value,
-            myth: currentMyth.value.title,
-        },
-    });
+    router.push(`/review/${currentMyth.value._id}`);
 };
 
 const deleteMyth = async () => {

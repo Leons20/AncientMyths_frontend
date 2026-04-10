@@ -60,7 +60,7 @@ const saveMyth = async () => {
     const formattedMythology = capitalize(mythology.value);
 
     try {
-        await mythStore.addMyth({
+        const createdMyth = await mythStore.addMyth({
             mythology: formattedMythology,
             title: title.value,
             mythText: mythText.value,
@@ -69,9 +69,7 @@ const saveMyth = async () => {
             link: link.value,
         });
 
-        router.push(
-            `/myths/${formattedMythology.toLowerCase()}/${encodeURIComponent(title.value)}`,
-        );
+        router.push(`/myths/${formattedMythology.toLowerCase()}/${createdMyth._id}`);
     } catch (error) {
         if (error.response?.data?.message) {
             errorMessage.value = error.response.data.message;

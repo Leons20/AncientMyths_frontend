@@ -30,7 +30,8 @@ const colors = {
 const selectedColors = computed(() => colors[mythology.value.toLowerCase()] || colors.egyptian);
 
 const goBackToMyth = () => {
-    router.push(`/myths/${mythology.value.toLowerCase()}/${encodeURIComponent(title.value)}`);
+    const id = route.params.id;
+    router.push(`/myths/${mythology.value.toLowerCase()}/${id}`);
 };
 
 const updateMyth = async () => {
@@ -56,7 +57,7 @@ const updateMyth = async () => {
 
     try {
         await mythStore.updateMyth(id, updated);
-        router.push(`/myths/${mythology.value.toLowerCase()}/${encodeURIComponent(title.value)}`);
+        goBackToMyth();
     } catch (err) {
         console.error(err);
         errorMessage.value = "Update failed";
