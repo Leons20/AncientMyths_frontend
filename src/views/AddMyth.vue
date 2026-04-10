@@ -69,6 +69,8 @@ const saveMyth = async () => {
             link: link.value,
         });
 
+        mythStore.selectedMyth = null;
+
         router.push(`/myths/${formattedMythology.toLowerCase()}/${createdMyth._id}`);
     } catch (error) {
         if (error.response?.data?.message) {

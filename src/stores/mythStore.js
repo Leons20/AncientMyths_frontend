@@ -57,6 +57,7 @@ export const useMythStore = defineStore("myths", () => {
             return res.data;
         } catch (err) {
             console.error("Error adding myth:", err);
+            throw err;
         }
     }
 
