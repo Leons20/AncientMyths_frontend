@@ -28,6 +28,8 @@ export const useUserStore = defineStore("user", () => {
 
         isAdmin.value = false;
         selectedMythology.value = "";
+        favorites.value = [];
+        allUsers.value = [];
     }
 
     async function login(credentials) {

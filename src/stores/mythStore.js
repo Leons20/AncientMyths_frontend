@@ -37,6 +37,7 @@ export const useMythStore = defineStore("myths", () => {
             total.value = res.data.total;
         } catch (err) {
             console.error("Error fetching myths:", err);
+            throw err;
         } finally {
             loading.value = false;
         }
@@ -47,7 +48,9 @@ export const useMythStore = defineStore("myths", () => {
             const res = await mythService.getMyth(id);
             selectedMyth.value = res.data;
         } catch (err) {
+            selectedMyth.value = null;
             console.error("Error fetching myth:", err);
+            throw err;
         }
     }
 
@@ -67,6 +70,7 @@ export const useMythStore = defineStore("myths", () => {
             await fetchMyth(id);
         } catch (err) {
             console.error("Error updating myth:", err);
+            throw err;
         }
     }
 
@@ -76,6 +80,7 @@ export const useMythStore = defineStore("myths", () => {
             await fetchMyths();
         } catch (err) {
             console.error("Error deleting myth:", err);
+            throw err;
         }
     }
 
@@ -85,6 +90,7 @@ export const useMythStore = defineStore("myths", () => {
             await fetchMyth(id);
         } catch (err) {
             console.error("Error rating myth:", err);
+            throw err;
         }
     }
 

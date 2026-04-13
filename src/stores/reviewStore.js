@@ -31,7 +31,7 @@ export const useReviewStore = defineStore("review", () => {
                 const r = res.data[i];
 
                 mapped.push({
-                    id: r._id,
+                    _id: r._id,
                     username: r.username || "",
                     text: r.text || "",
                     profileImage: r.profileImage || "/icons/user.svg",
@@ -42,6 +42,7 @@ export const useReviewStore = defineStore("review", () => {
             reviews.value = mapped;
         } catch (err) {
             console.error("Error fetching reviews:", err);
+            throw err;
         } finally {
             loading.value = false;
         }
@@ -53,6 +54,7 @@ export const useReviewStore = defineStore("review", () => {
             await fetchReviews(data.mythId);
         } catch (err) {
             console.error("Error adding review:", err);
+            throw err;
         }
     }
 
@@ -62,6 +64,7 @@ export const useReviewStore = defineStore("review", () => {
             await fetchReviews(mythId);
         } catch (err) {
             console.error("Error deleting review:", err);
+            throw err;
         }
     }
 

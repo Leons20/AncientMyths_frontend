@@ -228,7 +228,16 @@ onBeforeUnmount(() => {
                         v-if="searchFocused"
                         class="absolute mt-2 w-full bg-white border border-gray-300 rounded shadow p-2 space-y-2 z-10"
                     >
+                        <div v-if="mythStore.loading" class="text-gray-500 font-semibold">
+                            Loading myths...
+                        </div>
+
+                        <div v-else-if="!filteredMyths.length" class="text-gray-500">
+                            No myths found.
+                        </div>
+
                         <div
+                            v-else
                             v-for="myth in filteredMyths"
                             :key="myth._id"
                             class="text-base font-bold font-sans cursor-pointer hover:underline"
@@ -253,6 +262,10 @@ onBeforeUnmount(() => {
                     >
                         Add a Myth
                     </button>
+                </div>
+
+                <div v-if="mythStore.loading" class="text-gray-500 font-semibold mt-2">
+                    Loading page...
                 </div>
 
                 <div class="flex justify-center items-center gap-4 mt-4">

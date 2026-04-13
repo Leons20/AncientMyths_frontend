@@ -44,8 +44,11 @@ watch(
     async () => {
         const mythId = route.params.id;
 
+        currentMyth.value = null;
+        selectedRating.value = 0;
+        reviewStore.reviews = [];
+
         if (!mythId) {
-            currentMyth.value = null;
             return;
         }
 
@@ -63,8 +66,6 @@ watch(
             );
 
             selectedRating.value = userRating ? userRating.value : 0;
-        } else {
-            reviewStore.reviews = [];
         }
     },
     { immediate: true },
@@ -154,7 +155,11 @@ onMounted(async () => {
         <div class="flex-1 overflow-y-auto px-6 py-6 text-center">
             <div class="max-w-3xl mx-auto">
 
-                <div v-if="currentMyth">
+                <div v-if="mythStore.loading" class="text-3xl font-bold mt-10 text-gray-500">
+                    Loading myth...
+                </div>
+
+                <div v-else-if="currentMyth">
                     <div class="flex items-center justify-center mb-4 relative">
                         <img :src="currentMyth.image" class="w-lg h-96 object-cover rounded shadow-lg absolute -left-137.5 top-0" />
                         <h2 class="text-3xl font-bold">{{ currentMyth.title }}</h2>
